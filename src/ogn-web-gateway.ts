@@ -28,10 +28,10 @@ export default class OGNWebGateway {
 
     let app = this.app = websockify(new Koa());
 
-    app.use(route.get('/history', async ctx => {
+    app.use(route.get('/history/:id', async (ctx, id) => {
       ctx.type = 'application/json';
 
-      let records = await this.db.getRecordsForId('FLRDDF9E9');
+      let records = await this.db.getRecordsForId(id);
       ctx.body = JSON.stringify(records);
     }));
 
