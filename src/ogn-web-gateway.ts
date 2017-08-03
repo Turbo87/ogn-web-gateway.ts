@@ -1,5 +1,7 @@
 import OGNClient from './ogn-client';
 
+const FPM_TO_MPS = 0.00507999983744;
+
 export interface Record {
   from: string;
   to: string | null;
@@ -53,7 +55,7 @@ export default class OGNWebGateway {
 
     let match = data.comment && data.comment.match(/(?:([-+]\d+)fpm).*(?:([-+][0-9]*\.?[0-9]+)rot)/);
     if (match) {
-      verticalSpeed = parseFloat(match[1]) * 0.00507999983744;
+      verticalSpeed = parseFloat(match[1]) * FPM_TO_MPS;
       degreePerSecond = parseFloat(match[2]);
     }
 
