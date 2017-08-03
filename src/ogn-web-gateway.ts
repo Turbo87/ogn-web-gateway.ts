@@ -5,6 +5,9 @@ import OGNClient from './ogn-client';
 import {convertRecord, encodeRecord} from './record';
 
 import Koa = require('koa');
+import route = require('koa-route');
+import websockify = require('koa-websocket');
+import WebSocket = require('ws');
 
 export default class OGNWebGateway {
   private readonly db: Database;
@@ -12,6 +15,7 @@ export default class OGNWebGateway {
   private readonly app: Koa;
   private server: Server | null = null;
 
+  private clients: WebSocket[] = [];
   private cleanupTimer: NodeJS.Timer;
   private readonly cleanupInterval = 30 * 60 * 1000; // 30 minutes
 
@@ -22,17 +26,26 @@ export default class OGNWebGateway {
     this.ognClient.onRecord = this.onRecord.bind(this);
     this.ognClient.onClose = () => this.ognClient.connect();
 
-    this.app = new Koa();
-    this.app.use(async ctx => {
-      if (ctx.originalUrl === '/history') {
-        ctx.type = 'application/json';
+    let app = this.app = websockify(new Koa());
 
-        let records = await this.db.getRecordsForId('FLRDDF9E9');
-        ctx.body = JSON.stringify(records);
+    app.use(route.get('/history', async ctx => {
+      ctx.type = 'application/json';
 
-      } else {
-        ctx.throw(404, 'Not found');
-      }
+      let records = await this.db.getRecordsForId('FLRDDF9E9');
+      ctx.body = JSON.stringify(records);
+    }));
+
+    app.ws.use(route.get('/live', async ctx => {
+      let websocket = (ctx as any).websocket as WebSocket;
+
+      this.clients.push(websocket);
+
+      websocket.onclose = () => this.removeClient(websocket);
+    }));
+
+    app.ws.use(async ctx => {
+      let websocket = (ctx as any).websocket as WebSocket;
+      websocket.terminate();
     });
   }
 
@@ -71,6 +84,15 @@ export default class OGNWebGateway {
 
     let msg = encodeRecord(record);
 
-    console.log(msg);
+    for (let client of this.clients) {
+      client.send(msg);
+    }
+  }
+
+  private removeClient(websocket: WebSocket) {
+    let index = this.clients.indexOf(websocket);
+    if (index !== -1) {
+      this.clients.splice(index, 1);
+    }
   }
 }
