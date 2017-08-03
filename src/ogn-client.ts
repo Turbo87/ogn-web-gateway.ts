@@ -45,6 +45,18 @@ export default class OGNClient {
     this._timer = setTimeout(() => this.sendKeepAlive(), 30000);
   }
 
+  disconnect() {
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = undefined;
+    }
+
+    if (this.socket) {
+      this.socket.destroy();
+      this.socket = undefined;
+    }
+  }
+
   handleLine(line: string) {
     this.onLine(line);
 
