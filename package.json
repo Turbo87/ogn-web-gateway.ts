@@ -12,12 +12,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "aprs-parser": "^1.0.4"
+    "aprs-parser": "^1.0.4",
+    "pg": "^7.1.0"
   },
   "devDependencies": {
     "@types/geojson": "^1.0.2",
     "@types/jest": "^20.0.3",
     "@types/node": "^6.0.83",
+    "@types/pg": "^6.1.43",
     "jest": "^20.0.4",
     "ts-jest": "^20.0.7",
     "tslint": "^5.5.0",

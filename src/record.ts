@@ -1,6 +1,6 @@
 const FPM_TO_MPS = 0.00507999983744;
 
-export interface Record {
+interface Record {
   from: string;
   to: string | null;
   time: number;
@@ -14,6 +14,8 @@ export interface Record {
   symbol: string | null;
   isReceiver: boolean;
 }
+
+export default Record;
 
 export function convertRecord(record: any): Record | null {
   let from = record.from && record.from.call as (string | undefined);
