@@ -1,4 +1,4 @@
-import {Pool} from 'pg';
+import {Pool, QueryConfig, QueryResult} from 'pg';
 
 import Record from './record';
 
@@ -13,6 +13,18 @@ export default class Database {
 
   async end() {
     await this.pool.end();
+  }
+
+  async getRecordsForId(id: string): Promise<any[]> {
+    let text = `
+      SELECT sender, NULL, extract(EPOCH FROM time::timestamptz) AS time, longitude, latitude, altitude
+      FROM records
+      WHERE sender = $1
+      ORDER BY time ASC
+    `;
+
+    let result = await this.pool.query({ text, values: [id], rowMode: 'array' } as QueryConfig);
+    return result.rows.map(row => row.map((it: any) => (it === null) ? '' : it).join('|'));
   }
 
   async saveRecord(record: Record) {
