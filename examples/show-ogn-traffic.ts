@@ -8,11 +8,11 @@ if (process.argv.length < 2) {
 console.log('Connecting');
 let client = new OGNClient();
 
-client.on('ready', () => {
+client.onReady = () => {
   console.log('Connected');
-});
+};
 
-client.on('record', (record: any) => {
+client.onRecord = (record) => {
   let from = record.from;
   if (!from) return;
 
@@ -23,11 +23,11 @@ client.on('record', (record: any) => {
   if (!data) return;
 
   printRecord(from.call, data);
-});
+};
 
-client.on('close', () => {
+client.onClose = () => {
   console.log('Connection closed');
-});
+};
 
 client.connect();
 

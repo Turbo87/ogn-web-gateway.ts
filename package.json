@@ -12,8 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "aprs-parser": "^1.0.4",
-    "tiny-emitter": "^2.0.1"
+    "aprs-parser": "^1.0.4"
   },
   "devDependencies": {
     "@types/geojson": "^1.0.2",

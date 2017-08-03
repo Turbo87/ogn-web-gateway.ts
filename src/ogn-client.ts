@@ -3,7 +3,6 @@ import readline = require('readline');
 import {ReadLine} from 'readline';
 
 const aprs = require('aprs-parser');
-const Emitter = require('tiny-emitter');
 
 export default class OGNClient {
   readonly host = 'aprs.glidernet.org';
@@ -16,9 +15,13 @@ export default class OGNClient {
 
   private socket: Socket | undefined;
   private reader: ReadLine | undefined;
-  private readonly _emitter = new Emitter();
   private readonly parser = new aprs.APRSParser();
   private _timer: any;
+
+  onReady = () => {};
+  onLine = (line: string) => {};
+  onRecord = (record: any) => {};
+  onClose = () => {};
 
   connect() {
     let socket = this.socket = new Socket();
@@ -26,7 +29,7 @@ export default class OGNClient {
 
     socket.connect(this.port, this.host, () => {
       socket.write(`user ${this.user} pass ${this.pass} vers ${this.appName} ${this.appVersion}\n`);
-      this._emitter.emit('ready');
+      this.onReady();
     });
 
     socket.on('close', () => {
@@ -34,7 +37,7 @@ export default class OGNClient {
         clearTimeout(this._timer);
         this._timer = undefined;
       }
-      this._emitter.emit('close');
+      this.onClose();
     });
 
     reader.on('line', line => this.handleLine(line));
@@ -43,10 +46,10 @@ export default class OGNClient {
   }
 
   handleLine(line: string) {
-    this._emitter.emit('line', line);
+    this.onLine(line);
 
     let record = this.parser.parse(line);
-    this._emitter.emit('record', record);
+    this.onRecord(record);
   }
 
   scheduleKeepAlive() {
@@ -59,9 +62,5 @@ export default class OGNClient {
   sendKeepAlive() {
     if (this.socket)
       this.socket.write('# keep alive');
-  }
-
-  on(event: string, handler: Function) {
-    this._emitter.on(event, handler);
   }
 }
