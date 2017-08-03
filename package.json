@@ -1,0 +1,43 @@
+{
+  "name": "ogn-web-gateway",
+  "version": "0.0.0",
+  "description": "OGN APRS to REST/WS Gateway",
+  "main": "index.js",
+  "repository": "https://github.com/Turbo87/ogn-web-gateway",
+  "author": "Tobias Bieniek <tobias.bieniek@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint --project . --format stylish",
+    "test": "jest"
+  },
+  "dependencies": {
+    "aprs-parser": "^1.0.4",
+    "tiny-emitter": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/geojson": "^1.0.2",
+    "@types/jest": "^20.0.3",
+    "@types/node": "^6.0.83",
+    "jest": "^20.0.4",
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1",
+    "ws": "^3.1.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "testRegex": "(\\.(test|spec))\\.(ts|js)$",
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
+  }
+}
