@@ -6,6 +6,9 @@ export default class OGNWebGateway {
   private readonly ognClient: OGNClient;
   private readonly db: Database;
 
+  private cleanupTimer: NodeJS.Timer;
+  private readonly cleanupInterval = 30 * 60 * 1000; // 30 minutes
+
   constructor() {
     this.db = new Database();
 
@@ -16,6 +19,8 @@ export default class OGNWebGateway {
 
   start() {
     this.ognClient.connect();
+
+    this.scheduleCleanup();
   }
 
   async stop() {
@@ -23,7 +28,14 @@ export default class OGNWebGateway {
     await this.db.end();
   }
 
-  onRecord(_record: any) {
+  private scheduleCleanup() {
+    this.cleanupTimer = setTimeout(async () => {
+      await this.db.cleanup();
+      this.scheduleCleanup();
+    }, this.cleanupInterval);
+  }
+
+  private onRecord(_record: any) {
     let record = convertRecord(_record);
     if (!record) return;
 

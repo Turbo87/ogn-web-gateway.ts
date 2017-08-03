@@ -26,4 +26,13 @@ export default class Database {
 
     await this.pool.query(query, values);
   }
+
+  /**
+   * Deletes all records older than 24 hours
+   */
+  async cleanup() {
+    let threshold = Date.now() - 24 * 60 * 60 * 1000;
+    await this.pool.query('DELETE FROM records WHERE time < to_timestamp(div($1, 1000))', [threshold]);
+    await this.pool.query('VACUUM');
+  }
 }
