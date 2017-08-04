@@ -1,6 +1,8 @@
 ogn-web-gateway
 ==============================================================================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Turbo87/ogn-web-gateway.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/Turbo87/ogn-web-gateway.svg?branch=master)](https://travis-ci.org/Turbo87/ogn-web-gateway)
 
 OGN APRS to REST/WS Gateway
