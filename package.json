@@ -24,7 +24,7 @@
     "@types/koa": "^2.0.39",
     "@types/koa-route": "^3.2.0",
     "@types/koa-websocket": "^2.1.0",
-    "@types/node": "^6.0.83",
+    "@types/node": "^8.0.19",
     "@types/pg": "^6.1.43",
     "jest": "^20.0.4",
     "ts-jest": "^20.0.7",
